@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Probar API rest</title>
+    <style>
+        article {
+            border: 1px solid #ccc;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        img {
+            height: auto;
+            width: 320px;
+            max-width: 100%;
+        }
+    </style>
+    <script type="module">
+        //Para que se ejecute bien hay que ejecutar el servidor en el puerto 1234 con npm run dev y ejecutar el servidor de la pagina estatica con npx servor ./web
+        fetch('http://localhost:1234/movies')
+            .then(res => res.json())
+            .then(movies => {
+                const html = movies.map(movie => {
+                    return `
+                        <article data-id="${movie.id}">
+                            <h2>${movie.title}</h2>
+                            <img src="${movie.poster}" alt="${movie.title}"">
+                            <p>${movie.year}</p>
+
+
+                            <button>Eliminar</button>
+                        <article>
+                    `
+                }).join('')
+
+                //Añadimo a la etiqueta main todos los elementos escritos en el objeto html
+                document.querySelector('main').innerHTML = html
+
+                document.addEventListener('click', e => {
+                    if(e.target.matches('button')) {
+                        //escoge el articulo mas cercano
+                        const article = e.target.closest('article')
+                        //capturamos su ID
+                        const id = article.dataset.id
+
+                        fetch(`http://localhost:1234/movies/${id}`, {
+                            method: 'DELETE'
+                        })
+                            .then(res => res.json())
+                            .then(res => {
+                                if (res.success) {
+                                    article.remove()
+                                }
+                            })
+                    }
+                })
+        })
+    </script>
+</head>
+<body>
+    <main></main>
+</body>
+</html>
