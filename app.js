@@ -10,8 +10,6 @@ app.use(express.json());
 
 app.disable('X-powered-by');
 
-
-
 app.get('/',(req,res) => {
     res.header('Access-Control-Allow-Origin', '*');
     res.json({message: "Hola mundo"});
@@ -145,7 +143,7 @@ app.options('/movies/:id', (req,res) => {
 
 })
 
-
+//obtenemos el puerto de la variable de entorno que nos provera el servicio de hosting, si el mismo no posee, utilizará 1234
 const PORT = process.env.PORT ?? 1234;
 
 app.listen(PORT, () => {
